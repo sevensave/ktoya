@@ -1,0 +1,16 @@
+node_modules/
+out/
+dist/
+release/
+.DS_Store
+*.log
+.vite/
+test-results/
+playwright-report/
+.ktoya-profiles/
+tools/.cache/
+server/rooms.json*
+server/data/
+promo/reel/out/
+CLAUDE.md
+tools/catalog/out/

@@ -1,0 +1,133 @@
+/* ---------- Комната: верхняя панель и сцена этапа ---------- */
+.room {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background:
+    radial-gradient(1100px 600px at 50% -20%, #251d29, transparent 70%),
+    var(--room);
+}
+
+.topbar {
+  position: relative;
+  z-index: var(--z-hud);
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: 60px;
+  padding: 0 16px 0 24px;
+  border-bottom: 1px solid var(--line);
+  -webkit-app-region: drag;
+}
+.room.is-mac .topbar {
+  padding-left: 88px;
+}
+.topbar button {
+  -webkit-app-region: no-drag;
+}
+.topbar__left,
+.topbar__right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.topbar__right {
+  gap: 4px;
+}
+.topbar__brand {
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+}
+.topbar__brand span {
+  color: var(--accent);
+}
+.topbar__code {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  padding: 0 12px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--line-2);
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 600;
+  transition:
+    background-color 160ms var(--ease),
+    border-color 160ms var(--ease),
+    transform 160ms var(--ease-spring);
+}
+.topbar__code:hover {
+  background: var(--surface-2);
+  border-color: var(--lamp-40);
+}
+.topbar__code:active {
+  transform: var(--press);
+}
+.topbar__code svg {
+  color: var(--muted);
+}
+.topbar__code.is-copied svg {
+  color: var(--yes);
+}
+.topbar__code-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--faint);
+}
+.topbar__stage {
+  font-size: 13px;
+  color: var(--faint);
+  white-space: nowrap;
+}
+
+.conn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 12px 0 10px;
+  margin-right: 6px;
+  font-size: 13px;
+  color: var(--faint);
+}
+.conn:not(.is-bad) .pulse::after {
+  animation: none;
+}
+.conn.is-bad {
+  border-radius: var(--radius-pill);
+  background: rgb(255 176 114 / 0.12);
+  color: var(--st-peach);
+}
+
+/* Сцена этапа занимает всё под панелью; экраны сами решают, как скроллиться. */
+.room__stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.room__stage > * {
+  flex: 1;
+  min-height: 0;
+}
+
+@media (max-width: 760px) {
+  .topbar {
+    padding: 0 8px 0 16px;
+  }
+  .topbar__stage,
+  .topbar__code-label,
+  .conn__text {
+    display: none;
+  }
+  .conn {
+    padding: 0 8px;
+  }
+}

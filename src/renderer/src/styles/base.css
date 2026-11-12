@@ -1,0 +1,177 @@
+@font-face {
+  font-family: 'Geologica';
+  src: url('../assets/fonts/Geologica.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: oblique 0deg 12deg;
+  font-display: block;
+}
+
+/* Рукописный шрифт для надписей на стикерах (OFL, @fontsource-variable/caveat): латиница и кириллица отдельными файлами. */
+@font-face {
+  font-family: 'Caveat';
+  src: url('../assets/fonts/Caveat.woff2') format('woff2');
+  font-weight: 400 700;
+  font-display: block;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Caveat';
+  src: url('../assets/fonts/Caveat-Cyrillic.woff2') format('woff2');
+  font-weight: 400 700;
+  font-display: block;
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+
+:root {
+  /* Вечерняя комната: тёплая сливово-чёрная база, на ней яркие бумажные стикеры */
+  --room: #16131a;
+  --room-2: #1e1a24;
+  --room-3: #28222f;
+  --room-4: #352d3e;
+
+  /* Хром интерфейса: «бумага» — основные кнопки и выделения */
+  --lamp: #f3ecdf;
+  --lamp-ink: #17131a;
+  --lamp-12: rgb(243 236 223 / 0.08);
+  --lamp-24: rgb(243 236 223 / 0.16);
+  --lamp-40: rgb(243 236 223 / 0.32);
+
+  /* Фирменный акцент игры: розовый маркер */
+  --accent: #ff6f91;
+  --accent-deep: #c93d63;
+  --accent-ink: #2a0b14;
+  --accent-12: rgb(255 111 145 / 0.12);
+  --accent-24: rgb(255 111 145 / 0.24);
+
+  /* Стикеры: они же цвета игроков (PLAYER_COLORS в store/app.ts, порядок тот же) */
+  --st-lemon: #ffd95a;
+  --st-peach: #ffb072;
+  --st-coral: #ff8a7a;
+  --st-rose: #f58fb8;
+  --st-lilac: #c3a2f5;
+  --st-sky: #8ec5ff;
+  --st-mint: #7fe0c0;
+  --st-lime: #c5e26a;
+  /* Чернила на стикере и тень под ним */
+  --st-ink: #221a14;
+  --st-shadow: 0 1px 0 rgb(255 255 255 / 0.35) inset, 0 10px 24px -8px rgb(0 0 0 / 0.55), 0 2px 4px rgb(0 0 0 / 0.3);
+
+  /* Ответы: да / нет / не знаю */
+  --yes: #6fd6a0;
+  --yes-ink: #06281a;
+  --no: #ff8370;
+  --no-ink: #330d06;
+  --maybe: #b9b2c4;
+  --maybe-ink: #1d1923;
+
+  /* Текст */
+  --text: #f1ecf2;
+  --muted: #a79fb0;
+  --faint: #6f6779;
+  --line: rgb(241 236 242 / 0.09);
+  --line-2: rgb(241 236 242 / 0.17);
+  --error: #ff8370;
+
+  --radius-s: 10px;
+  --radius-m: 16px;
+  --radius-l: 24px;
+  --radius-pill: 999px;
+
+  --hand: 'Caveat', 'Geologica', cursive;
+
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --z-stage: 1;
+  --z-hud: 20;
+  --z-panel: 30;
+  --z-modal: 50;
+  --z-toast: 60;
+  --z-grain: 70;
+
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--room);
+  color: var(--text);
+  font-family: 'Geologica', system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  font-variation-settings: 'SHRP' 0;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+  user-select: none;
+  cursor: default;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+input,
+textarea {
+  user-select: text;
+}
+
+:focus-visible {
+  outline: 2px solid var(--lamp);
+  outline-offset: 2px;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+  font-variation-settings: 'SHRP' 40;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Зерно поверх всего: фиксированный слой, не перерисовывается при скролле. */
+.grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: var(--z-grain);
+  background-image: url('../assets/noise.png');
+  background-size: 256px;
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,22 @@
+services:
+  server:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    container_name: ktoya-server
+    restart: unless-stopped
+    ports:
+      - '127.0.0.1:8097:8080'
+    environment:
+      # Порт открыт только на localhost, снаружи ходят через nginx: ему можно верить в X-Real-IP.
+      TRUST_PROXY: '1'
+    volumes:
+      # Снимок комнат. Лежит в /root/ktoya-server/data/rooms.json
+      - ./data:/app/data
+    # Снимок комнат пишется при остановке: даём на это время.
+    stop_grace_period: 15s
+    mem_limit: 160m
+    logging:
+      options:
+        max-size: '5m'
+        max-file: '2'
