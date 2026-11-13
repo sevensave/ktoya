@@ -11,7 +11,7 @@ services:
       # Порт открыт только на localhost, снаружи ходят через nginx: ему можно верить в X-Real-IP.
       TRUST_PROXY: '1'
     volumes:
-      # Снимок комнат. Лежит в /root/ktoya-server/data/rooms.json
+      # Снимок комнат: data/rooms.json рядом с docker-compose.yml
       - ./data:/app/data
     # Снимок комнат пишется при остановке: даём на это время.
     stop_grace_period: 15s

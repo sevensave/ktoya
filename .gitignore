@@ -15,3 +15,4 @@ promo/reel/out/
 CLAUDE.md
 tools/catalog/out/
 server/deploy.sh
+server/nginx.conf

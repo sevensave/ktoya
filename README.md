@@ -32,7 +32,7 @@ src/protocol    сообщения клиент ↔ сервер и то, что
 src/client      сессия клиента
 src/renderer    интерфейс (React)
 src/main        оболочка Electron, автообновление (под лаунчером Sevensave выключено)
-server/         комнаты, колода, HTTP/WS; выкат server/deploy.sh <ssh-хост>
+server/         комнаты, колода, HTTP/WS, Dockerfile
 tools/          иконка (npx electron tools/render-icon.cjs), патчноут релиза, арт каталога (tools/catalog)
 ```
 
