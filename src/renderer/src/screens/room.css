@@ -24,6 +24,10 @@
 .room.is-mac .topbar {
   padding-left: 88px;
 }
+.room.is-win .topbar {
+  /* Оставляем свободное место под системные кнопки поверх titlebar overlay. */
+  padding-right: 152px;
+}
 .topbar button {
   -webkit-app-region: no-drag;
 }

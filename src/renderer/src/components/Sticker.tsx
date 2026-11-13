@@ -25,10 +25,10 @@ interface Props {
   style?: CSSProperties
 }
 
-/** Размер рукописного текста: длинные имена мельче, чтобы влезали в 2–3 строки. */
+/** Размер рукописного текста: длинные имена мельче, чтобы помещались на стикере. */
 function fontFor(text: string, w: number): number {
   const n = text.length
-  const k = n <= 6 ? 0.25 : n <= 10 ? 0.2 : n <= 16 ? 0.165 : n <= 24 ? 0.14 : 0.12
+  const k = n <= 6 ? 0.25 : n <= 10 ? 0.2 : n <= 16 ? 0.165 : n <= 24 ? 0.14 : 0.105
   return Math.round(w * k)
 }
 

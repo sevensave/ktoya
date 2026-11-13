@@ -5,7 +5,7 @@ import type { RoomView } from '../../../protocol/index.ts'
 import { Confirm } from '../components/Confirm'
 import { copyText } from '../lib/clipboard'
 import { formatCode } from '../lib/format'
-import { isMac, native } from '../lib/native'
+import { isMac, isWindows, native } from '../lib/native'
 import { me } from '../lib/players'
 import { leaveRoom } from '../net/connection'
 import { useApp } from '../store/app'
@@ -38,7 +38,7 @@ export function Room() {
   const Stage = { lobby: Lobby, assign: Assign, play: Play, over: Results }[view.stage]
 
   return (
-    <div className={`room ${isMac && native ? 'is-mac' : ''}`} data-stage={view.stage}>
+    <div className={`room ${isMac && native ? 'is-mac' : ''} ${isWindows && native ? 'is-win' : ''}`} data-stage={view.stage}>
       <header className="topbar">
         <div className="topbar__left">
           <span className="topbar__brand">
