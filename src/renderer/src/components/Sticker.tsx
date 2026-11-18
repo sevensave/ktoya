@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'motion/react'
-import type { CSSProperties, ReactNode } from 'react'
+import { useLayoutEffect, useRef, type CSSProperties, type ReactNode } from 'react'
 import type { CardStatus } from '../../../protocol/index.ts'
 import { useApp } from '../store/app'
 import './sticker.css'
@@ -32,6 +32,42 @@ function fontFor(text: string, w: number): number {
   return Math.round(w * k)
 }
 
+function StickerText({ text, w }: { text: string; w: number }) {
+  const ref = useRef<HTMLSpanElement>(null)
+  const preferred = fontFor(text, w)
+
+  useLayoutEffect(() => {
+    const label = ref.current
+    const area = label?.parentElement
+    if (!label || !area) return
+
+    const fit = () => {
+      for (let size = preferred; size >= 1; size--) {
+        label.style.fontSize = `${size}px`
+        if (label.offsetHeight <= area.clientHeight && label.scrollWidth <= label.clientWidth) break
+      }
+    }
+
+    fit()
+    const observer = new ResizeObserver(fit)
+    observer.observe(area)
+    let active = true
+    void document.fonts.ready.then(() => {
+      if (active) fit()
+    })
+    return () => {
+      active = false
+      observer.disconnect()
+    }
+  }, [preferred, text])
+
+  return (
+    <span className="sticker__label">
+      <span className="sticker__text" ref={ref} style={{ fontSize: preferred }}>{text}</span>
+    </span>
+  )
+}
+
 export function Sticker({ color, text, w, rot = 0, category, status = 'playing', wobble, note, children, tape, className, style }: Props) {
   const reduce = useApp((s) => s.settings.reduceMotion)
   const hidden = text === null && !children
@@ -58,14 +94,12 @@ export function Sticker({ color, text, w, rot = 0, category, status = 'playing',
             {category && !hidden && <span className="sticker__cat">{category}</span>}
             {children ? (
               children
-            ) : hidden ? (
+            ) : text === null ? (
               <span className="sticker__q" style={{ fontSize: Math.round(w * 0.55) }} aria-label="Неизвестно">
                 ?
               </span>
             ) : (
-              <span className="sticker__text" style={{ fontSize: fontFor(text!, w) }}>
-                {text}
-              </span>
+              <StickerText text={text} w={w} />
             )}
             {note && <span className="sticker__note">{note}</span>}
             {status === 'gaveup' && !hidden && <span className="sticker__stamp sticker__stamp--gaveup">сдаюсь</span>}

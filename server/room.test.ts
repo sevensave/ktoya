@@ -217,6 +217,37 @@ describe('комната', () => {
     }
   })
 
+  it('передаёт ход после первого «нет» и не применяет запоздавший ответ к новому вопросу', () => {
+    const { cs, clock, host } = started(4, { turnSeconds: 20 })
+    const g = host.view.game!
+    const turn = byId(cs, g.turn)
+    const next = byId(cs, g.order[(g.order.indexOf(turn.id) + 1) % g.order.length]!)
+    const [other, late] = cs.filter((c) => c !== turn && c !== next)
+    const text = 'Я человек?'
+
+    turn.send({ t: 'ask', text })
+    const question = { by: turn.id, n: 1 }
+    next.send({ t: 'answer', a: 'yes', question })
+    other!.send({ t: 'answer', a: 'maybe', question })
+    expect(turn.view.game).toMatchObject({ turn: turn.id, phase: 'answers', deadline: g.deadline })
+
+    clock.advance(5_000)
+    next.send({ t: 'answer', a: 'no', question })
+    for (const c of cs) {
+      expect(c.view.game).toMatchObject({ turn: next.id, phase: 'ask', question: null, deadline: clock.t + 20_000 })
+      expect(c.view.game!.log.at(-1)).toEqual({ kind: 'q', by: turn.id, text, yes: 0, no: 1, maybe: 1 })
+      expect(c.events.slice(-2)).toEqual([{ e: 'answer', by: next.id, a: 'no' }, { e: 'turn', id: next.id, reason: 'pass' }])
+    }
+
+    next.send({ t: 'ask', text: 'Я из кино?' })
+    late!.send({ t: 'answer', a: 'no', question })
+    expect(next.view.game).toMatchObject({ turn: next.id, phase: 'answers', question: { answers: {} } })
+
+    // Формат ответа из уже выпущенной версии клиента тоже работает.
+    late!.send({ t: 'answer', a: 'no' })
+    expect(next.view.game!.turn).not.toBe(next.id)
+  })
+
   it('assign: переписать можно, force добирает из колоды', () => {
     const { cs, host } = started(3, { source: 'players' })
     cs[1]!.send({ t: 'assign', name: 'Первый' })

@@ -401,8 +401,11 @@ export class Room {
         case 'answer': {
           const g = this.playing()
           if (!g) return fail('wrong_stage')
+          if (msg.question && (msg.question.by !== g.question?.by || msg.question.n !== g.question.n)) return
           answer(g, me.id, msg.a)
-          return this.broadcast([{ e: 'answer', by: me.id, a: msg.a }])
+          const events: RoomEvent[] = [{ e: 'answer', by: me.id, a: msg.a }]
+          if (msg.a === 'no') events.push(...this.nextTurn('pass'))
+          return this.broadcast(events)
         }
         case 'vote': {
           const g = this.playing()

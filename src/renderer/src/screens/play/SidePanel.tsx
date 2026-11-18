@@ -59,7 +59,7 @@ function Notes({ view, g, you }: { view: RoomView; g: GameView; you: string }) {
   const live = g.turn === you && g.phase === 'answers' && g.question ? g.question : null
   const total = mine.filter((e) => e.kind === 'q').length + (live ? 1 : 0)
   const sum = mine.reduce(
-    (s, e) => (e.kind === 'q' ? { yes: s.yes + (e.yes > e.no ? 1 : 0), no: s.no + (e.no >= e.yes && e.no > 0 ? 1 : 0) } : s),
+    (s, e) => (e.kind === 'q' ? { yes: s.yes + (e.no === 0 && e.yes > 0 ? 1 : 0), no: s.no + (e.no > 0 ? 1 : 0) } : s),
     { yes: 0, no: 0 },
   )
 

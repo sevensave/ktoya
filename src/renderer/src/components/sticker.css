@@ -66,17 +66,36 @@
     var(--paper);
 }
 
+.sticker__label {
+  position: absolute;
+  inset: 12% 11%;
+  display: grid;
+  place-items: center;
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+}
+
+.sticker:has(> .sticker__cat) > .sticker__label {
+  inset-block-start: max(25%, calc(10% + 13px));
+}
+
+.sticker:has(> .sticker__note) > .sticker__label {
+  inset-block-end: max(25%, calc(10% + 13px));
+}
+
+.sticker:has(> .sticker__stamp) > .sticker__label {
+  inset-block-end: max(30%, calc(12% + 20px));
+}
+
 .sticker__text {
+  width: 100%;
+  padding-block: 0.45em;
   font-family: var(--hand);
   font-weight: 700;
-  line-height: 0.98;
+  line-height: 1.2;
   letter-spacing: -0.01em;
   overflow-wrap: anywhere;
-  hyphens: auto;
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  /* Размер измеряется сразу после изменения, в том числе при уменьшенном движении. */
+  transition-property: none;
   transform: rotate(-1.5deg);
 }
 

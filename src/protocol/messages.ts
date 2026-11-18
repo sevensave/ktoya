@@ -77,8 +77,8 @@ export const clientMessage = z.discriminatedUnion('t', [
   /** Назвать ответ: «Я — …». */
   z.object({ t: z.literal('guess'), text: z.string().min(1).max(LIMITS.guess) }),
   // Игра. Остальные:
-  /** Ответить на текущий вопрос (можно передумать). */
-  z.object({ t: z.literal('answer'), a: answer }),
+  /** Ответить на открытый вопрос. Старые клиенты не передают его номер. */
+  z.object({ t: z.literal('answer'), a: answer, question: z.object({ by: id, n: z.number().int().positive() }).optional() }),
   /** Засчитать ли названный ответ. */
   z.object({ t: z.literal('vote'), ok: z.boolean() }),
   // Игра. Любой, кто ещё не отгадал:

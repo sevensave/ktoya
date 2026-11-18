@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'motion/react'
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { ArrowRight, ArrowUUpRight, Check, Lightbulb, Microphone, Question, X } from '@phosphor-icons/react'
 import { LIMITS, type Answer, type GameView, type PlayerView, type RoomView } from '../../../../protocol/index.ts'
 import { Avatar } from '../../components/Avatar'
@@ -204,9 +204,13 @@ function TheirTurn({ view, g, you, turnP, canAnswer }: { view: RoomView; g: Game
   const card = g.cards[turnP.id]
   const q = g.phase === 'answers' ? g.question : null
   const mine = q && you ? q.answers[you] : undefined
+  const questionNumber = q?.n
+  const sendAnswer = useCallback((a: Answer) => {
+    if (questionNumber !== undefined) send({ t: 'answer', a, question: { by: turnP.id, n: questionNumber } })
+  }, [questionNumber, turnP.id])
 
   useEffect(() => {
-    if (!q || !canAnswer) return
+    if (questionNumber === undefined || !canAnswer) return
     const onKey = (e: KeyboardEvent) => {
       const el = e.target as HTMLElement
       if (el.closest('input, textarea, [contenteditable]') || e.metaKey || e.ctrlKey || e.altKey) return
@@ -214,12 +218,12 @@ function TheirTurn({ view, g, you, turnP, canAnswer }: { view: RoomView; g: Game
       const a = map[e.code]
       if (a) {
         e.preventDefault()
-        send({ t: 'answer', a })
+        sendAnswer(a)
       }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [q, canAnswer])
+  }, [questionNumber, canAnswer, sendAnswer])
 
   return (
     <div className="their">
@@ -234,7 +238,7 @@ function TheirTurn({ view, g, you, turnP, canAnswer }: { view: RoomView; g: Game
                   <motion.button
                     key={a}
                     className={`answer answer--${a} ${mine === a ? 'is-on' : ''} ${mine && mine !== a ? 'is-off' : ''}`}
-                    onClick={() => send({ t: 'answer', a })}
+                    onClick={() => sendAnswer(a)}
                     whileTap={{ scale: 0.95 }}
                     aria-pressed={mine === a}
                   >
@@ -247,7 +251,7 @@ function TheirTurn({ view, g, you, turnP, canAnswer }: { view: RoomView; g: Game
             ) : (
               <p className="panel-muted">Ты смотришь эту партию</p>
             )}
-            {canAnswer && mine && <p className="panel-hint">Можно передумать, пока {turnP.name} не спросит дальше</p>}
+            {canAnswer && mine && <p className="panel-hint">Можно передумать, пока вопрос открыт</p>}
           </>
         ) : (
           <>
@@ -284,7 +288,6 @@ function QuestionLive({ view, g, you: self }: { view: RoomView; g: GameView; you
   const t = tally(q.answers)
   const total = responders(view, g).length
   const answered = t.yes + t.no + t.maybe
-  const manyNo = self && answered >= Math.max(1, Math.ceil(total / 2)) && t.no > t.yes
   return (
     <div className="qlive">
       <span className="eyebrow">
@@ -303,7 +306,7 @@ function QuestionLive({ view, g, you: self }: { view: RoomView; g: GameView; you
         <TallyChip kind="maybe" n={t.maybe} label="не знаю" />
         <span className="tally__left num">{answered < total ? `ждём ${total - answered}` : 'все ответили'}</span>
       </div>
-      {manyNo && <p className="panel-hint">Больше «нет», чем «да» — обычно в этот момент передают ход</p>}
+      {self && <p className="panel-hint">Ответ «нет» сразу передаёт ход</p>}
     </div>
   )
 }
