@@ -1,6 +1,6 @@
 {
   "name": "ktoya",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Кто я?: угадай, кто написан у тебя на лбу. Для своей компании",
   "author": "vldvr",
   "license": "MIT",
@@ -22,7 +22,10 @@
     "pack:win": "npm run build && electron-builder --win --x64 --publish never",
     "release:win": "npm run build && electron-builder --win --x64 --publish always",
     "server": "node --experimental-strip-types --no-warnings server/main.ts",
-    "icon": "electron tools/render-icon.cjs"
+    "icon": "electron tools/render-icon.cjs",
+    "light:dev": "npm exec --yes --package=@tauri-apps/cli@2.12.5 -- tauri dev",
+    "light:build": "npm exec --yes --package=@tauri-apps/cli@2.12.5 -- tauri build",
+    "build:light-web": "vite build --config vite.web.config.ts --mode light --outDir ../../dist/light --emptyOutDir --target safari17"
   },
   "dependencies": {
     "electron-updater": "6.8.11",

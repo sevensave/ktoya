@@ -16,3 +16,18 @@ CLAUDE.md
 tools/catalog/out/
 server/deploy.sh
 server/nginx.conf
+
+# Локальные настройки и ключи для деплоя или подписи.
+.env
+.env.*
+!.env.example
+!.env.sample
+!.env.template
+credentials.json
+*.key
+*.pem
+*.p12
+*.pfx
+id_rsa
+id_ecdsa
+id_ed25519

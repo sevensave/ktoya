@@ -94,8 +94,39 @@ jobs:
       - name: Загрузить артефакты в релиз
         run: gh release upload "$TAG" release/*.dmg release/*-mac-*.zip --clobber
 
+  light:
+    needs: draft
+    strategy:
+      matrix:
+        include:
+          - { os: macos-latest, target: aarch64-apple-darwin, bundle: '--bundles app', arch: mac-arm64 }
+          - { os: macos-latest, target: x86_64-apple-darwin, bundle: '--bundles app', arch: mac-x64 }
+          - { os: windows-latest, target: x86_64-pc-windows-msvc, bundle: '--no-bundle', arch: win-x64 }
+    runs-on: ${{ matrix.os }}
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      TAG: ${{ inputs.tag || github.ref_name }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.source_ref || inputs.tag || github.ref }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: rustup target add ${{ matrix.target }}
+      - run: npm ci
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+      - run: npm run light:build -- --target ${{ matrix.target }} ${{ matrix.bundle }} -- --locked
+      - run: bash tools/pack-light.sh ${{ matrix.target }}
+      - run: gh release upload "$TAG" "release/Ktoya-Light-${TAG#v}-${{ matrix.arch }}.zip" --clobber
+
   publish:
-    needs: [windows, mac]
+    needs: [windows, mac, light]
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

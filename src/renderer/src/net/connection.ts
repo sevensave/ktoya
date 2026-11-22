@@ -2,7 +2,7 @@ import { GameSession, type Profile, type SessionHandlers } from '../../../client
 import type { ClientMessage, RejectReason } from '../../../protocol/index.ts'
 import { formatCode } from '../lib/format'
 import { playerToken } from '../lib/id'
-import { native } from '../lib/native'
+import { flash } from '../lib/native'
 import { loadRaw, save } from '../lib/storage'
 import { useApp } from '../store/app'
 import { BusyError, connect, NotFoundError } from './server'
@@ -94,7 +94,7 @@ function backHome(error: string | null) {
   target = null
   reconnecting = false
   set({ screen: 'home', code: null, conn: 'idle', you: null, view: null, avatars: {}, homeError: error })
-  native?.flash(false)
+  flash(false)
 }
 
 async function open(t: { create: true } | { code: string }) {

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { sound } from '../audio/sound'
 import { clearNotes } from '../lib/game'
-import { native } from '../lib/native'
+import { flash } from '../lib/native'
 import { useApp } from '../store/app'
 
 const unfocused = () => typeof document !== 'undefined' && (!document.hasFocus() || document.hidden)
@@ -28,7 +28,7 @@ export function useRoomSounds(): void {
       switch (e.e) {
         case 'assign':
           sound.play('level', { volume: 0.45 })
-          if (unfocused()) native?.flash(true)
+          if (unfocused()) flash(true)
           break
         case 'start':
           if (view?.code) clearNotes(view.code)
@@ -37,7 +37,7 @@ export function useRoomSounds(): void {
         case 'turn':
           if (e.id === you) {
             if (settings.turnSound) sound.play('turn', { volume: 0.6, delay: 150 })
-            if (unfocused()) native?.flash(true)
+            if (unfocused()) flash(true)
           } else {
             sound.play('tick', { volume: 0.25 })
           }
@@ -45,7 +45,7 @@ export function useRoomSounds(): void {
         case 'ask':
           if (e.by !== you) {
             sound.play('message', { volume: 0.45 })
-            if (playing && unfocused()) native?.flash(true)
+            if (playing && unfocused()) flash(true)
           }
           break
         case 'answer':
@@ -53,7 +53,7 @@ export function useRoomSounds(): void {
           break
         case 'guess':
           sound.play('chime', { volume: 0.55 })
-          if (e.by !== you && playing && unfocused()) native?.flash(true)
+          if (e.by !== you && playing && unfocused()) flash(true)
           break
         case 'verdict':
           if (e.ok) sound.play('win', { volume: e.by === you ? 0.75 : 0.4 })

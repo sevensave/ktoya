@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { MotionConfig } from 'motion/react'
 import { releasesSince } from './changelog'
 import { Toasts } from './components/Toasts'
-import { native } from './lib/native'
+import { flash, native } from './lib/native'
 import { loadRaw, save } from './lib/storage'
 import { Home } from './screens/Home'
 import { Room } from './screens/Room'
@@ -34,7 +34,7 @@ export function App() {
   }, [appVersion])
 
   useEffect(() => {
-    const onFocus = () => native?.flash(false)
+    const onFocus = () => flash(false)
     window.addEventListener('focus', onFocus)
     return () => window.removeEventListener('focus', onFocus)
   }, [])

@@ -22,6 +22,14 @@ export interface Release {
 
 export const CHANGELOG: Release[] = [
   {
+    version: '0.1.2',
+    date: '2026-11-22',
+    title: 'Компактная сборка',
+    changes: [
+      { kind: 'better', title: 'Игра занимает меньше', text: 'На совместимых компьютерах Sevensave скачивает компактную сборку. При первом запуске она переносит профиль и заметки из предыдущей версии.' },
+    ],
+  },
+  {
     version: '0.1.1',
     date: '2026-11-18',
     title: 'Стикеры и ходы',

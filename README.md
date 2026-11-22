@@ -32,9 +32,20 @@ src/protocol    сообщения клиент ↔ сервер и то, что
 src/client      сессия клиента
 src/renderer    интерфейс (React)
 src/main        оболочка Electron, автообновление (под лаунчером Sevensave выключено)
+src-tauri/      компактная оболочка Tauri на Rust для Sevensave
 server/         комнаты, колода, HTTP/WS, Dockerfile
 tools/          иконка (npx electron tools/render-icon.cjs), патчноут релиза, арт каталога (tools/catalog)
 ```
+
+Компактная сборка использует системный WebView на macOS 14+ и WebView2 на Windows. При первом запуске она копирует профиль, настройки и заметки из Electron. Для запуска нужен Rust и инструменты сборки целевой платформы.
+
+```bash
+npm run light:dev
+npm run light:build -- --target aarch64-apple-darwin --bundles app -- --locked
+bash tools/pack-light.sh aarch64-apple-darwin
+```
+
+Для Intel Mac укажи `x86_64-apple-darwin`. На Windows укажи `x86_64-pc-windows-msvc`, замени `--bundles app` на `--no-bundle` и запусти упаковку из Git Bash с доступным `7z`. Поле `light` из `tools/catalog/entry.json` нужно перенести в каталог Sevensave, чтобы лаунчер выбрал компактный zip. На остальных системах лаунчер берёт обычный zip из `assets`.
 
 Релиз: поднять версию в `package.json`, дописать `src/renderer/src/changelog.ts`, запушить тег `vX.Y.Z`. Сборки для Windows и Mac уходят в релиз `sevensave/ktoya`, оттуда их берёт лаунчер Sevensave.
 
