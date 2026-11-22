@@ -100,7 +100,7 @@ jobs:
       matrix:
         include:
           - { os: macos-latest, target: aarch64-apple-darwin, bundle: '--bundles app', arch: mac-arm64 }
-          - { os: macos-latest, target: x86_64-apple-darwin, bundle: '--bundles app', arch: mac-x64 }
+          - { os: macos-15-intel, target: x86_64-apple-darwin, bundle: '--bundles app', arch: mac-x64 }
           - { os: windows-latest, target: x86_64-pc-windows-msvc, bundle: '--no-bundle', arch: win-x64 }
     runs-on: ${{ matrix.os }}
     env:
